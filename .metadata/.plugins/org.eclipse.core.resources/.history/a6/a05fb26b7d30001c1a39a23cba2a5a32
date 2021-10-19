@@ -1,0 +1,2 @@
+server.servlet.context-path=/minhastarefas
+spring.profiles.active=dev
