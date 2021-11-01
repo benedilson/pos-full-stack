@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @NamedQuery(name = "Tarefa.tarefasPorCategoria", query = "select t from Tarefa t inner join t.categoria c where c.nome = ?1")
@@ -21,12 +24,15 @@ public class Tarefa {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
+	@NotBlank(message = "{tarefa.descricao.not-blank}")
+	@Size(min = 5, max = 150, message = "{tarefa.descricao.size}") 
 	@Column(name = "ds_tarefa", nullable = false, length = 150)
 	private String descricao;
 	
 	@Enumerated(EnumType.STRING)
-	private TarefaStatus status;
+	private TarefaStatus status = TarefaStatus.ABERTO;
 	
+	@FutureOrPresent(message = "{tarefa.descricao.future-or-present}")
 	private LocalDate dataEntrega;
     
 	private boolean visivel;
