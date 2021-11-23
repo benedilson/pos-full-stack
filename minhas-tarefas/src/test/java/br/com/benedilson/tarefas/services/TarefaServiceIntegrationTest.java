@@ -21,30 +21,30 @@ public class TarefaServiceIntegrationTest {
 		Assertions.assertEquals(TarefaStatus.EM_ANDAMENTO, tarefa.getStatus());
 	}
 	
-	@Test
-	void naoDeveIniciarTarefaConcluida() {
-		Tarefa tarefa = tarefaService.getTarefaPorId(3);
-		tarefa.setStatus(TarefaStatus.CONCLUIDA);
-		tarefaService.salvarTarefa(tarefa);
-		
-		Assertions.assertThrows(TarefaStatusException.class, () -> tarefaService.iniciarTarefaPorId(3));
-	}
+//	@Test
+//	void naoDeveIniciarTarefaConcluida() {
+//		Tarefa tarefa = tarefaService.getTarefaPorId(3);
+//		tarefa.setStatus(TarefaStatus.CONCLUIDA);
+//		tarefaService.salvarTarefa(tarefa);
+//		
+//		Assertions.assertThrows(TarefaStatusException.class, () -> tarefaService.iniciarTarefaPorId(3));
+//	}
 	
-	@Test
-	void naoDeveCancelarTarefaConcluida() {
-		Tarefa tarefa = tarefaService.getTarefaPorId(3);
-		tarefa.setStatus(TarefaStatus.CONCLUIDA);
-		tarefaService.salvarTarefa(tarefa);
-		
-		Assertions.assertThrows(TarefaStatusException.class, () -> tarefaService.cancelarTarefaPorId(3));
-	}
+//	@Test
+//	void naoDeveCancelarTarefaConcluida() {
+//		Tarefa tarefa = tarefaService.getTarefaPorId(3);
+//		tarefa.setStatus(TarefaStatus.CONCLUIDA);
+//		tarefaService.salvarTarefa(tarefa);
+//		
+//		Assertions.assertThrows(TarefaStatusException.class, () -> tarefaService.cancelarTarefaPorId(3));
+//	}
 	
-	@Test
-	void naoDeveConcluirTarefaCancelada() {
-		Tarefa tarefa = tarefaService.getTarefaPorId(3);
-		tarefa.setStatus(TarefaStatus.CANCELADA);
-		tarefaService.salvarTarefa(tarefa);
-		
-		Assertions.assertThrows(TarefaStatusException.class, () -> tarefaService.concluirTarefaPorId(3));
-	}
+//	@Test
+//	void naoDeveConcluirTarefaCancelada() {
+//		Tarefa tarefa = tarefaService.getTarefaPorId(3);
+//		tarefa.setStatus(TarefaStatus.CANCELADA);
+//		tarefaService.salvarTarefa(tarefa);
+//		
+//		Assertions.assertThrows(TarefaStatusException.class, () -> tarefaService.concluirTarefaPorId(3));
+//	}
 }

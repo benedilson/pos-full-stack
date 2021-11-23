@@ -1,0 +1,17 @@
+package br.com.benedilson.tarefas.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import br.com.benedilson.tarefas.model.Usuario;
+import br.com.benedilson.tarefas.repository.UsuarioRepository;
+
+public class UsuarioService {
+
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+	
+	public Usuario getUsuarioPorId(Integer id) {
+		return usuarioRepository.getOne(id);
+	}
+	
+}

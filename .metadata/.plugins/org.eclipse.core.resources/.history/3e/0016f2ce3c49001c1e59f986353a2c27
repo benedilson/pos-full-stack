@@ -1,0 +1,85 @@
+package br.com.benedilson.tarefas.controller;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.com.benedilson.tarefas.controller.request.TarefaRequest;
+import br.com.benedilson.tarefas.controller.response.TarefaResponse;
+import br.com.benedilson.tarefas.model.Tarefa;
+import br.com.benedilson.tarefas.services.TarefaService;
+
+@RestController
+@RequestMapping("/tarefa")
+public class TarefaController {
+
+	@Autowired
+	private TarefaService tarefaService;
+	
+	@Autowired
+	private ModelMapper mapper; 
+	
+	@GetMapping
+	public List<TarefaResponse> todasTarefas(@RequestParam Map<String, String> parametros) {
+		List<Tarefa> tarefas = new ArrayList<>();
+		
+		if(parametros.isEmpty()) {
+		   tarefas = tarefaService.getTodasTarefas();
+		} else {
+		   String descricao = parametros.get("descricao");
+		   tarefas = tarefaService.getTarefasPorDescricao(descricao);
+		}
+		
+		List<TarefaResponse> tarefaResp = tarefas.stream()
+				.map(tarefa -> mapper.map(tarefa, TarefaResponse.class))
+				.collect(Collectors.toList());
+		
+		return tarefaResp;
+	}
+	
+	@GetMapping("/{id}")
+	public EntityModel<TarefaResponse> umaTarefa(@PathVariable Integer id) {
+		
+		Tarefa tarefa = tarefaService.getTarefaPorId(id);
+		TarefaResponse tarefaResponse = mapper.map(tarefa, TarefaResponse.class);
+		
+		EntityModel<TarefaResponse> tarefaModel = EntityModel.of(tarefaResponse, 
+				linkTo(methodOn(TarefaController.class).umaTarefa(id)).withSelfRel(),
+				linkTo(methodOn(TarefaController.class).todasTarefas(new HashMap<>())).withRel("tarefas"),
+				linkTo(methodOn(TarefaCategoriaController.class).umaCategoria(tarefaResponse.getCategoriaId())).withRel("categoria")
+				);
+		
+		return tarefaModel;
+	}
+	
+	@PostMapping
+	public TarefaResponse salvarTarefa(@Valid @RequestBody TarefaRequest tarefaReq) {
+		Tarefa tarefa = mapper.map(tarefaReq, Tarefa.class);
+		return mapper.map(tarefaService.salvarTarefa(tarefa), TarefaResponse.class);
+	}
+	
+	@DeleteMapping("/tarefa/{id}")
+	public void excluirTarefa(@PathVariable Integer id) {
+		tarefaService.deleteById(id);
+	}
+}
