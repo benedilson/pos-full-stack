@@ -1,5 +1,0 @@
-package br.com.benedilson.tarefas.controller.assembler;
-
-public class TarefaModelAssembler {
-
-}

@@ -1,0 +1,24 @@
+package br.com.benedilson.tarefas.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import br.com.benedilson.tarefas.controller.UsuarioController;
+import br.com.benedilson.tarefas.model.Usuario;
+
+@Service
+public class UserDetailsServiceImple implements UserDetailsService {
+
+	@Autowired
+	private UsuarioController usuarioRepository;
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		Usuario usuario = usuarioRepository.findByName(username);
+		return null;
+	}
+
+}

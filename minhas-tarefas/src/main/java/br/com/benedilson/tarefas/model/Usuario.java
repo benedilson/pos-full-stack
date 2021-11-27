@@ -1,5 +1,6 @@
 package br.com.benedilson.tarefas.model;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +15,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -62,7 +65,10 @@ public class Usuario {
 	public void setTarefas(List<Tarefa> tarefas) {
 		this.tarefas = tarefas;
 	}
-	
-	
-	
+	public Set<Role> getRoles() {
+		return roles;
+	}
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
 }

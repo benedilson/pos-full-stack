@@ -20,14 +20,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import br.com.benedilson.tarefas.controller.response.ErroResponse;
 import br.com.benedilson.tarefas.exception.TarefaStatusException;
 
-@RestControllerAdvice //@ControllerAdvice
+@RestControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(EntityNotFoundException.class)
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public ErroResponse entityNotFoundHandler(EntityNotFoundException ex) {
-		return new ErroResponse("Recurso não encontrado");
-	}
+//	@ExceptionHandler(EntityNotFoundException.class)
+//	@ResponseStatus(HttpStatus.NOT_FOUND)
+//	public ErroResponse entityNotFoundHandler(EntityNotFoundException ex) {
+//		return new ErroResponse("Recurso não encontrado");
+//	}
 	
 	@ExceptionHandler(EntityNotFoundException.class)
 	ResponseEntity<?> alteraStatusTarefaHandler(TarefaStatusException ex) {
