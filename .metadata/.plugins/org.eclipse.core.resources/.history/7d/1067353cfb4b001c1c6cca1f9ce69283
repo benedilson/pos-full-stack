@@ -1,5 +1,0 @@
-package br.com.benedilson.tarefas.controller.response;
-
-public class ErroResponse {
-
-}

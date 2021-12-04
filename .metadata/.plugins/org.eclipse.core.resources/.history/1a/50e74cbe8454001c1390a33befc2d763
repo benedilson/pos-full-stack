@@ -1,0 +1,5 @@
+package br.com.benedilson.tarefas.controller;
+
+public class AuthController {
+
+}

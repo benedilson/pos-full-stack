@@ -1,5 +1,7 @@
 package br.com.benedilson.tarefas.security;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import br.com.benedilson.tarefas.services.UserDetailsServiceImple;
 
@@ -25,7 +30,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private static final String[] PATHS = new String[] {"/tarefa/**", "/categoria/**", "/usuario/**"};
 	
 	@Autowired
-	private UserDetailsServiceImple userDetailsServiceImple;
+	private UserDetailsServiceImple userDetailsService;
+	
+	@Autowired
+	private AuthEntryPointJWT unauthorizedHandler;
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -48,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsServiceImple)
+		auth.userDetailsService(userDetailsService)
 		.passwordEncoder(passwordEncoder());
 	}
 	
@@ -70,6 +78,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/h2-console/**").permitAll()
 				.anyRequest().authenticated()
 			.and()
-				.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+				.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
+			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler);
+	}
+	
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:8081"));
+		configuration.setAllowedMethods(Arrays.asList("*"));
+		configuration.setAllowedHeaders(Arrays.asList("*"));
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
 	}
 }

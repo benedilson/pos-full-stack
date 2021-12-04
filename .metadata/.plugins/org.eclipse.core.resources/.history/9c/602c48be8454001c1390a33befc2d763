@@ -1,0 +1,66 @@
+package br.com.benedilson.tarefas.services;
+
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import br.com.benedilson.tarefas.model.Role;
+import br.com.benedilson.tarefas.model.Usuario;
+import br.com.benedilson.tarefas.repository.RoleRepository;
+import br.com.benedilson.tarefas.repository.UsuarioRepository;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Service
+public class UsuarioService {
+
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private RoleRepository roleRepository;
+	
+	public Usuario getUsuarioPorId(Integer id) {
+		return usuarioRepository.findById(id).orElseThrow(
+				() -> new EntityNotFoundException()
+				);
+	}
+
+	public Usuario salvar(Usuario usuario) {
+		Set<Role> roles = getRoles(usuario);
+		usuario.setRoles(roles);
+		usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+		return usuarioRepository.save(usuario);
+	}
+	
+	public Usuario atualizar(Integer id, Usuario usuario) {
+		Optional<Usuario> usuarioBanco = usuarioRepository.findById(id);
+		
+		if(!usuarioBanco.isPresent())
+			throw new EntityNotFoundException();
+		
+		usuario.setId(id);
+		return salvar(usuario);
+	}
+	
+	public void deleteById(Integer id) {
+		usuarioRepository.deleteById(id);
+	}
+	
+	
+	private Set<Role> getRoles(Usuario usuario) {
+		Set<Role> rolesBanco = usuario.getRoles().stream().map(role -> 
+			roleRepository.findByName(role.getName())
+				).collect(Collectors.toSet());
+		
+		return rolesBanco;
+	}
+	
+}
